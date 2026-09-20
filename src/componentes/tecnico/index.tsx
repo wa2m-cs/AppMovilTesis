@@ -9,11 +9,18 @@ export default function InicioTecnico() {
   ];
 
   return (
+
     <InicioRol
       titulo="Técnico"
       descripcion="Consulta y registra las actividades técnicas que te corresponden."
       funciones={funciones}
-    />
-  );
 
+      rutas={[
+        "/tecnico/horarios",
+        "/tecnico/recoleccion",
+        "/tecnico/recoleccion",
+      ]}
+    />
+
+  );
 }

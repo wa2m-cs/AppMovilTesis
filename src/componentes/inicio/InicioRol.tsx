@@ -8,27 +8,38 @@ import {
 
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { useRouter } from "expo-router";
+import { useRouter, type Href } from "expo-router";
 
 import { colores } from "@/constantes/colores";
+
+import { cerrarSesion } from "@/servicios/api";
 
 // Propiedades del componente
 interface PropiedadesInicio {
   titulo: string;
   descripcion: string;
   funciones: string[];
+  rutas?: Href[];
 }
 
 export default function InicioRol({
   titulo,
   descripcion,
   funciones,
+  rutas = [],
 }: PropiedadesInicio) {
 
   const router = useRouter();
 
-  const volver = () => {
-    router.replace("/activacion");
+  const volver = async () => {
+    try {
+      await cerrarSesion();
+    } catch (error) {
+      console.warn("No se pudo cerrar la sesión, intente de nuevo.");
+    } finally {
+      router.replace("/activacion");
+    }
+
   };
 
   return (
@@ -43,7 +54,7 @@ export default function InicioRol({
         <View style={estilos.encabezado}>
 
           <Text style={estilos.logo}>
-            EnRuta
+            SACOR
           </Text>
 
           <Text style={estilos.subtitulo}>
@@ -74,33 +85,57 @@ export default function InicioRol({
           Mis funciones
         </Text>
 
-        {funciones.map((funcion, indice) => (
+        {funciones.map((funcion, indice) => {
 
-          <View
-            key={indice}
-            style={estilos.tarjeta}
-          >
-            <View style={estilos.numero}>
-              <Text style={estilos.textoNumero}>
-                {indice + 1}
-              </Text>
-            </View>
+          const ruta = rutas[indice];
 
-            <View style={estilos.informacion}>
+          return (
 
-              <Text style={estilos.nombreFuncion}>
-                {funcion}
-              </Text>
+            <Pressable
+              key={indice}
+              style={({ pressed }) => [
+                estilos.tarjeta,
+                pressed && ruta && {
+                  opacity: 0.7
+                }
+              ]}
+              disabled={!ruta}
+              onPress={() => {
+                if (ruta) {
+                  router.push(ruta);
+                }
+              }}
+              accessibilityRole="button"
+              accessibilityLabel={funcion}
+            >
 
-              <Text style={estilos.estado}>
-                Vista pendiente de desarrollo
-              </Text>
+              <View style={estilos.numero}>
+                <Text style={estilos.textoNumero}>
+                  {indice + 1}
+                </Text>
+              </View>
 
-            </View>
+              <View style={estilos.informacion}>
 
-          </View>
+                <Text style={estilos.nombreFuncion}>
+                  {funcion}
+                </Text>
 
-        ))}
+                {ruta ? (
+
+                  <Text style={estilos.estado}>
+                    Abrir →
+                  </Text>
+
+                ) : null}
+
+              </View>
+
+            </Pressable>
+
+          );
+
+        })}
 
         <Pressable
           style={estilos.botonVolver}
@@ -108,14 +143,10 @@ export default function InicioRol({
         >
 
           <Text style={estilos.textoBoton}>
-            Volver a activación
+            Cerrar sesión
           </Text>
 
         </Pressable>
-
-        <Text style={estilos.aviso}>
-          Versión de demostración sin conexión a la API.
-        </Text>
 
       </ScrollView>
 
@@ -127,128 +158,179 @@ const estilos = StyleSheet.create({
 
   pantalla: {
     flex: 1,
-    backgroundColor: "#F1F5F9",
+    backgroundColor: "#0A0A0A",
   },
 
   contenido: {
-    paddingBottom: 35,
+    paddingBottom: 40,
+    flexGrow: 1,
   },
 
   encabezado: {
-    backgroundColor: colores.fondo,
-    paddingHorizontal: 25,
-    paddingVertical: 30,
+    backgroundColor: "#050505",
+    paddingHorizontal: 26,
+    paddingTop: 38,
+    paddingBottom: 34,
+    borderBottomWidth: 2,
+    borderBottomColor: "#22C55E",
   },
 
   logo: {
-    color: colores.blanco,
-    fontSize: 28,
-    fontWeight: "800",
+    color: "#22C55E",
+    fontSize: 34,
+    fontWeight: "900",
+    letterSpacing: 2,
   },
 
   subtitulo: {
-    color: "#CBD5E1",
+    color: "#A3A3A3",
     fontSize: 13,
-    marginTop: 4,
+    marginTop: 6,
+    letterSpacing: 0.4,
   },
 
   bienvenida: {
-    paddingHorizontal: 24,
-    paddingTop: 30,
-    paddingBottom: 20,
+    backgroundColor: "#111111",
+    borderRadius: 20,
+    marginHorizontal: 18,
+    marginTop: 22,
+    paddingHorizontal: 22,
+    paddingVertical: 24,
+    borderWidth: 1,
+    borderColor: "#1F1F1F",
+    shadowColor: "#000000",
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 10,
+    elevation: 4,
   },
 
   saludo: {
-    color: colores.textoSecundario,
-    fontSize: 16,
+    color: "#A3A3A3",
+    fontSize: 14,
+    fontWeight: "500",
   },
 
   titulo: {
-    color: colores.titulo,
-    fontSize: 26,
-    fontWeight: "800",
-    marginTop: 5,
+    color: "#FFFFFF",
+    fontSize: 28,
+    fontWeight: "900",
+    marginTop: 6,
+    letterSpacing: -0.5,
   },
 
   descripcion: {
-    color: colores.textoSecundario,
+    color: "#CFCFCF",
     fontSize: 14,
-    lineHeight: 21,
+    lineHeight: 22,
     marginTop: 10,
   },
 
   tituloSeccion: {
-    color: colores.titulo,
-    fontSize: 19,
-    fontWeight: "700",
-    marginHorizontal: 24,
-    marginTop: 14,
+    color: "#22C55E",
+    fontSize: 20,
+    fontWeight: "800",
+    marginHorizontal: 22,
+    marginTop: 26,
     marginBottom: 16,
+    letterSpacing: 0.2,
   },
 
   tarjeta: {
-    backgroundColor: colores.blanco,
-    borderRadius: 15,
-    marginHorizontal: 24,
+    backgroundColor: "#111111",
+    borderRadius: 18,
+    marginHorizontal: 18,
     marginBottom: 12,
-    padding: 18,
+    paddingHorizontal: 16,
+    paddingVertical: 18,
     flexDirection: "row",
     alignItems: "center",
-    gap: 15,
+    gap: 14,
+    borderWidth: 1,
+    borderColor: "#1F1F1F",
+    borderLeftWidth: 4,
+    borderLeftColor: "#22C55E",
+    shadowColor: "#000000",
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 3,
   },
 
   numero: {
-    width: 42,
-    height: 42,
-    borderRadius: 12,
-    backgroundColor: "#DBEAFE",
+    width: 48,
+    height: 48,
+    borderRadius: 14,
+    backgroundColor: "#0B1A11",
+    borderWidth: 1,
+    borderColor: "#1F6F43",
     alignItems: "center",
     justifyContent: "center",
   },
 
   textoNumero: {
-    color: colores.primario,
-    fontSize: 18,
-    fontWeight: "800",
+    color: "#22C55E",
+    fontSize: 19,
+    fontWeight: "900",
   },
 
   informacion: {
     flex: 1,
+    justifyContent: "center",
   },
 
   nombreFuncion: {
-    color: colores.titulo,
+    color: "#FFFFFF",
     fontSize: 15,
-    fontWeight: "700",
+    fontWeight: "800",
+    lineHeight: 21,
   },
 
   estado: {
-    color: colores.textoSecundario,
+    color: "#22C55E",
     fontSize: 12,
-    marginTop: 5,
+    fontWeight: "700",
+    marginTop: 6,
   },
 
   botonVolver: {
-    backgroundColor: colores.primario,
-    borderRadius: 12,
-    marginHorizontal: 24,
-    marginTop: 22,
-    padding: 17,
+    backgroundColor: "#22C55E",
+    borderRadius: 14,
+    marginHorizontal: 18,
+    marginTop: 28,
+    paddingVertical: 17,
     alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#22C55E",
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+    elevation: 4,
   },
 
   textoBoton: {
-    color: colores.blanco,
+    color: "#051108",
     fontSize: 15,
-    fontWeight: "700",
+    fontWeight: "900",
+    letterSpacing: 0.2,
   },
 
   aviso: {
-    color: colores.textoSecundario,
+    color: "#8F8F8F",
     fontSize: 12,
     textAlign: "center",
-    marginTop: 20,
-    marginHorizontal: 24,
+    marginTop: 18,
+    marginHorizontal: 22,
+    lineHeight: 18,
   },
 
 });

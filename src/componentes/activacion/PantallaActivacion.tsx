@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import { useRouter } from "expo-router";
 
-import { CODIGOS_PRUEBA } from "@/constantes/codigoPrueba";
+import {iniciarSesion,cerrarSesion} from "@/servicios/api";
 
 import {
   Alert,
@@ -27,29 +27,34 @@ export default function PantallaActivacion() {
   const [codigo, setCodigo] = useState("");
   //Estado del error para validar el código de activación
   const [error, setError] = useState("");
+  const [procesando, setProcesando] = useState(false);
 
   const router = useRouter();
 
   const codigoValidoParaEnviar = codigo.trim().length > 0;
 
-  // Temporal
-  const activarCuenta = () => {
+  const ingresar = async () => {
 
-      // Eliminar espacios y convertir a mayúsculas
-      const codigoIngresado = codigo.trim().toUpperCase();
+    if (procesando) return;
 
-      // Buscar el código 
-      const rol = CODIGOS_PRUEBA[codigoIngresado];
+    const codigoIngresado =
+      codigo.trim().toUpperCase();
 
-      // Si el código no existe, mostrará un error de que es inválido
-      if (!rol) {
-        setError("El código ingresado no es válido.");
-        return;
-      }
+    if (!codigoIngresado) {
+      setError("Introduce tu código de acceso.");
+      return;
+    }
 
-      setError("");
-      // Redireccionar
-      switch (rol) {
+    setProcesando(true);
+    setError("");
+
+    try {
+
+      const empleado = await iniciarSesion(
+        codigoIngresado
+      );
+
+      switch (empleado.rol) {
 
         case "transportista":
           router.replace("/transportista");
@@ -60,12 +65,33 @@ export default function PantallaActivacion() {
           break;
 
         case "administrador":
-          router.replace("/administrador");
+
+          await cerrarSesion();
+
+          setError(
+            "El módulo administrador todavía no está disponible."
+          );
+
           break;
 
+        default:
+          setError("Tu rol no tiene acceso a la aplicación.");
       }
 
-    };
+    } catch (error) {
+
+      setError(
+        error instanceof Error
+          ? error.message
+          : "No se pudo iniciar sesión."
+      );
+
+    } finally {
+
+      setProcesando(false);
+
+    }
+  };
 
   return (
     <SafeAreaView style={estilos.pantalla}>
@@ -107,22 +133,22 @@ export default function PantallaActivacion() {
             <View style={estilos.tarjeta}>
 
               <Text style={estilos.titulo}>
-                Activa tu cuenta
+                Inicia sesión
               </Text>
 
               <Text style={estilos.descripcion}>
-                Introduce el código de activación
-                proporcionado por tu administrador
+                Introduce el código que te ha
+                proporcionado el administrador
                 para acceder a la aplicación.
               </Text>
 
               <Text style={estilos.etiqueta}>
-                Código de activación
+                Código de acceso
               </Text>
 
               <TextInput
                 style={estilos.campo}
-                placeholder="Ej. ENR-8K2M4P"
+                placeholder="Ingresa tu código"
                 placeholderTextColor={colores.gris}
                 value={codigo}
                 onChangeText={(texto) => {
@@ -132,25 +158,15 @@ export default function PantallaActivacion() {
                 autoCapitalize="characters"
                 autoCorrect={false}
                 spellCheck={false}
-                maxLength={32}
+                maxLength={30}
                 returnKeyType="done"
-                accessibilityLabel="Código de activación"
+                accessibilityLabel="Código de acceso"
               />
               {error ? (
                 <Text style={estilos.error}>
                   {error}
                 </Text>
               ) : null}
-
-              <Text style={estilos.codigosDemo}>
-                Modo demostración:
-                {"\n"}
-                1111: Transportista
-                {"\n"}
-                2222: Técnico
-                {"\n"}
-                3333: Administrador
-              </Text>
 
               <Text style={estilos.ayuda}>
                 ¿No tienes un código? Solicítalo
@@ -168,8 +184,8 @@ export default function PantallaActivacion() {
                     codigoValidoParaEnviar &&
                     estilos.botonPresionado,
                 ]}
-                disabled={!codigoValidoParaEnviar}
-                onPress={activarCuenta}
+                disabled={!codigoValidoParaEnviar || procesando}
+                onPress={ingresar}
                 accessibilityRole="button"
                 accessibilityState={{
                   disabled: !codigoValidoParaEnviar,
@@ -177,7 +193,7 @@ export default function PantallaActivacion() {
               >
 
                 <Text style={estilos.textoBoton}>
-                  Activar mi cuenta
+                 {procesando ? "Ingresando..." : "Ingresar"}
                 </Text>
 
               </Pressable>
@@ -346,13 +362,6 @@ const estilos = StyleSheet.create({
   color: "#DC2626",
   fontSize: 13,
   marginBottom: 12,
-},
-
-codigosDemo: {
-  color: "#64748B",
-  fontSize: 12,
-  lineHeight: 20,
-  marginBottom: 18,
 },
 
 });
