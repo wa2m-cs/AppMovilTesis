@@ -1,17 +1,17 @@
 export const colores = {
-  fondo: "#0B1425",
-  tarjeta: "#FFFFFF",
+  fondo: "#0A0A0A",
+  tarjeta: "#111111",
 
-  primario: "#176BDE",
-  primarioPresionado: "#0C56B7",
+  primario: "#22C55E",
+  primarioPresionado: "#16A34A",
 
-  titulo: "#10213A",
-  texto: "#334155",
-  textoSecundario: "#64748B",
+  titulo: "#FFFFFF",
+  texto: "#E5E5E5",
+  textoSecundario: "#A3A3A3",
 
-  borde: "#D6DFEB",
-  fondoCampo: "#F8FAFC",
+  borde: "#232323",
+  fondoCampo: "#0C0C0C",
 
   blanco: "#FFFFFF",
-  gris: "#94A3B8",
+  gris: "#6B7280",
 } as const;

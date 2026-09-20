@@ -286,79 +286,122 @@ const estilos = StyleSheet.create({
 
   pantalla: {
     flex: 1,
-    backgroundColor: "#F1F5F9",
+    backgroundColor: "#0A0A0A",
   },
 
   contenido: {
-    paddingBottom: 35,
+    paddingBottom: 42,
+    flexGrow: 1,
   },
 
   encabezado: {
-    backgroundColor: colores.fondo,
-    padding: 25,
+    backgroundColor: "#050505",
+    paddingHorizontal: 24,
+    paddingTop: 32,
+    paddingBottom: 34,
+    borderBottomWidth: 2,
+    borderBottomColor: "#22C55E",
   },
 
   volver: {
-    color: colores.blanco,
-    marginBottom: 20,
+    color: "#86EFAC",
+    fontSize: 14,
+    fontWeight: "700",
+    marginBottom: 24,
   },
 
   titulo: {
-    color: colores.blanco,
-    fontSize: 28,
-    fontWeight: "800",
+    color: "#FFFFFF",
+    fontSize: 29,
+    fontWeight: "900",
+    letterSpacing: -0.5,
   },
 
   subtitulo: {
-    color: "#CBD5E1",
-    marginTop: 8,
+    color: "#B5B5B5",
+    fontSize: 14,
+    marginTop: 10,
+    lineHeight: 21,
   },
 
   tarjeta: {
-    backgroundColor: colores.blanco,
-    borderRadius: 16,
-    padding: 20,
-    margin: 18,
+    backgroundColor: "#111111",
+    borderRadius: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 22,
+    marginHorizontal: 16,
+    marginTop: 20,
     marginBottom: 0,
+    borderWidth: 1,
+    borderColor: "#1F1F1F",
+    shadowColor: "#000000",
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.18,
+    shadowRadius: 10,
+    elevation: 4,
   },
 
   tituloSeccion: {
-    color: colores.titulo,
+    color: "#22C55E",
     fontSize: 20,
-    fontWeight: "700",
-    marginBottom: 15,
+    fontWeight: "900",
+    marginBottom: 20,
+    paddingBottom: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: "#1F1F1F",
   },
 
   nombre: {
-    color: colores.titulo,
+    color: "#FFFFFF",
     fontSize: 15,
-    fontWeight: "700",
-    marginBottom: 6,
+    fontWeight: "800",
+    marginBottom: 8,
   },
 
   descripcion: {
-    color: colores.textoSecundario,
+    color: "#A3A3A3",
     fontSize: 14,
+    lineHeight: 21,
     marginBottom: 6,
   },
 
   registro: {
-    borderBottomWidth: 1,
-    borderBottomColor: "#E2E8F0",
-    paddingVertical: 12,
+    backgroundColor: "#0C0C0C",
+    borderWidth: 1,
+    borderColor: "#202020",
+    borderLeftWidth: 4,
+    borderLeftColor: "#22C55E",
+    borderRadius: 14,
+    paddingHorizontal: 15,
+    paddingVertical: 16,
+    marginBottom: 12,
   },
 
   boton: {
-    backgroundColor: colores.primario,
-    margin: 18,
-    padding: 16,
-    borderRadius: 12,
+    backgroundColor: "#22C55E",
+    marginHorizontal: 16,
+    marginTop: 22,
+    paddingVertical: 18,
+    borderRadius: 14,
     alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#22C55E",
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 3,
   },
 
   textoBoton: {
-    color: colores.blanco,
-    fontWeight: "700",
+    color: "#051108",
+    fontSize: 15,
+    fontWeight: "900",
   },
 
   cargando: {
@@ -366,8 +409,15 @@ const estilos = StyleSheet.create({
   },
 
   error: {
-    color: "#DC2626",
-    margin: 20,
+    color: "#FCA5A5",
+    backgroundColor: "#2A0E0E",
+    borderWidth: 1,
+    borderColor: "#7F1D1D",
+    borderRadius: 12,
+    padding: 14,
+    marginHorizontal: 16,
+    marginTop: 20,
+    overflow: "hidden",
   },
 
 });

@@ -114,14 +114,14 @@ export default function PantallaActivacion() {
 
             <View style={estilos.logo}>
               <Text style={estilos.textoLogo}>
-                E
+                S
               </Text>
             </View>
 
             {/* nombre de la aplicación */}
 
             <Text style={estilos.nombreAplicacion}>
-              EnRuta
+              SACOR
             </Text>
 
             <Text style={estilos.subtituloAplicacion}>
@@ -252,37 +252,39 @@ const estilos = StyleSheet.create({
   },
 
   textoLogo: {
-    color: colores.blanco,
+    color: "#051108",
     fontSize: 38,
-    fontWeight: "800",
+    fontWeight: "900",
   },
 
   nombreAplicacion: {
-    color: colores.blanco,
+    color: colores.primario,
     fontSize: 34,
-    fontWeight: "800",
-    letterSpacing: -1,
+    fontWeight: "900",
+    letterSpacing: 1.5,
   },
 
   subtituloAplicacion: {
-    color: "#B8C7DD",
+    color: colores.textoSecundario,
     fontSize: 15,
-    marginTop: 5,
+    marginTop: 6,
     marginBottom: 35,
   },
 
   tarjeta: {
     width: "100%",
     backgroundColor: colores.tarjeta,
-    borderRadius: 24,
+    borderRadius: 22,
     padding: 26,
+    borderWidth: 1,
+    borderColor: colores.borde,
 
     shadowColor: "#000000",
     shadowOffset: {
       width: 0,
       height: 8,
     },
-    shadowOpacity: 0.12,
+    shadowOpacity: 0.2,
     shadowRadius: 16,
     elevation: 5,
   },
@@ -290,7 +292,7 @@ const estilos = StyleSheet.create({
   titulo: {
     color: colores.titulo,
     fontSize: 25,
-    fontWeight: "800",
+    fontWeight: "900",
     marginBottom: 12,
   },
 
@@ -312,7 +314,7 @@ const estilos = StyleSheet.create({
     width: "100%",
     height: 55,
     backgroundColor: colores.fondoCampo,
-    borderWidth: 1,
+    borderWidth: 1.5,
     borderColor: colores.borde,
     borderRadius: 12,
     paddingHorizontal: 16,
@@ -347,21 +349,22 @@ const estilos = StyleSheet.create({
   },
 
   textoBoton: {
-    color: colores.blanco,
+    color: "#051108",
     fontSize: 16,
-    fontWeight: "700",
+    fontWeight: "900",
   },
 
   pie: {
-    color: "#94A8C4",
+    color: colores.gris,
     fontSize: 12,
     textAlign: "center",
     marginTop: 30,
   },
+
   error: {
-  color: "#DC2626",
-  fontSize: 13,
-  marginBottom: 12,
-},
+    color: "#FCA5A5",
+    fontSize: 13,
+    marginBottom: 12,
+  },
 
 });

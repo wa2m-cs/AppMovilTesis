@@ -265,104 +265,169 @@ const estilos = StyleSheet.create({
 
   pantalla: {
     flex: 1,
-    backgroundColor: "#F1F5F9"
+    backgroundColor: "#0A0A0A",
   },
 
   contenido: {
-    paddingBottom: 30
+    paddingBottom: 42,
+    flexGrow: 1,
   },
 
   encabezado: {
-    backgroundColor: colores.fondo,
-    padding: 25
+    backgroundColor: "#050505",
+    paddingHorizontal: 24,
+    paddingTop: 32,
+    paddingBottom: 34,
+    borderBottomWidth: 2,
+    borderBottomColor: "#22C55E",
   },
 
   volver: {
-    color: colores.blanco,
-    marginBottom: 20,
-    fontSize: 15
+    color: "#86EFAC",
+    marginBottom: 24,
+    fontSize: 14,
+    fontWeight: "700",
   },
 
   titulo: {
-    color: colores.blanco,
-    fontSize: 27,
-    fontWeight: "800"
+    color: "#FFFFFF",
+    fontSize: 29,
+    fontWeight: "900",
+    letterSpacing: -0.5,
   },
 
   subtitulo: {
-    color: "#CBD5E1",
-    marginTop: 8
+    color: "#B5B5B5",
+    fontSize: 14,
+    marginTop: 10,
+    lineHeight: 21,
   },
 
   tarjeta: {
-    backgroundColor: colores.blanco,
-    padding: 22,
-    margin: 18,
-    borderRadius: 16
+    backgroundColor: "#111111",
+    borderRadius: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 22,
+    marginHorizontal: 16,
+    marginTop: 20,
+    borderWidth: 1,
+    borderColor: "#1F1F1F",
+    shadowColor: "#000000",
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.18,
+    shadowRadius: 10,
+    elevation: 4,
   },
 
   tituloTarjeta: {
-    color: colores.titulo,
+    color: "#22C55E",
     fontSize: 20,
-    fontWeight: "700",
-    marginBottom: 15
+    fontWeight: "900",
+    marginBottom: 20,
+    paddingBottom: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: "#1F1F1F",
   },
 
   estado: {
-    color: colores.primario,
-    fontWeight: "700",
-    marginBottom: 12
+    color: "#86EFAC",
+    fontSize: 14,
+    fontWeight: "800",
+    marginBottom: 14,
+    backgroundColor: "#0E1A12",
+    borderWidth: 1,
+    borderColor: "#166534",
+    borderRadius: 10,
+    padding: 12,
+    overflow: "hidden",
   },
 
   descripcion: {
-    color: colores.textoSecundario,
-    marginBottom: 8
+    color: "#A3A3A3",
+    fontSize: 14,
+    lineHeight: 21,
+    marginBottom: 8,
   },
 
   boton: {
-    backgroundColor: colores.primario,
-    padding: 16,
-    borderRadius: 12,
+    backgroundColor: "#22C55E",
+    paddingVertical: 18,
+    paddingHorizontal: 16,
+    borderRadius: 14,
     alignItems: "center",
-    marginTop: 14
+    justifyContent: "center",
+    marginTop: 16,
+    shadowColor: "#22C55E",
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 3,
   },
 
   deshabilitado: {
-    opacity: 0.5
+    opacity: 0.45,
   },
 
   textoBoton: {
-    color: colores.blanco,
-    fontWeight: "700"
+    color: "#051108",
+    fontSize: 15,
+    fontWeight: "900",
   },
 
   registro: {
-    borderBottomWidth: 1,
-    borderBottomColor: "#E2E8F0",
-    paddingVertical: 14
+    backgroundColor: "#0C0C0C",
+    borderWidth: 1,
+    borderColor: "#202020",
+    borderLeftWidth: 4,
+    borderLeftColor: "#22C55E",
+    borderRadius: 14,
+    paddingHorizontal: 15,
+    paddingVertical: 16,
+    marginBottom: 12,
   },
 
   fecha: {
-    color: colores.titulo,
-    fontWeight: "700",
-    marginBottom: 8
+    color: "#FFFFFF",
+    fontSize: 14,
+    fontWeight: "800",
+    marginBottom: 9,
   },
 
   error: {
-    color: "#DC2626",
-    marginTop: 14
+    color: "#FCA5A5",
+    backgroundColor: "#2A0E0E",
+    borderWidth: 1,
+    borderColor: "#7F1D1D",
+    borderRadius: 12,
+    padding: 13,
+    marginTop: 14,
+    overflow: "hidden",
   },
 
   exito: {
-    color: "#15803D",
-    marginTop: 14
+    color: "#BBF7D0",
+    backgroundColor: "#0F1F15",
+    borderWidth: 1,
+    borderColor: "#166534",
+    borderRadius: 12,
+    padding: 13,
+    marginTop: 14,
+    overflow: "hidden",
   },
 
   actualizar: {
-    color: colores.primario,
-    fontWeight: "700",
+    color: "#22C55E",
+    fontSize: 14,
+    fontWeight: "800",
     textAlign: "center",
-    marginTop: 20
-  }
+    marginTop: 22,
+    paddingVertical: 8,
+  },
 
 });
