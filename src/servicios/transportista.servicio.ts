@@ -115,3 +115,41 @@ export async function guardarEvidenciaTransportista(
     true
   );
 }
+export interface InformacionAdicionalTransportista {
+  idServicioContrato: number;
+  destino: string;
+  fechaUtc: string;
+  kilometros: number;
+  combustibleLitros: number;
+  gastoUsd: number;
+}
+
+export interface DatosInformacionAdicional {
+  idServicioContrato: number;
+  kilometros: number;
+  combustibleLitros: number;
+  gastoUsd: number;
+}
+
+export async function consultarInformacionAdicional():
+  Promise<InformacionAdicionalTransportista[]> {
+
+  return solicitar<InformacionAdicionalTransportista[]>(
+    "/api/movil/transportista/informacion-adicional",
+    "GET",
+    undefined,
+    true
+  );
+}
+
+export async function registrarInformacionAdicional(
+  datos: DatosInformacionAdicional
+): Promise<InformacionAdicionalTransportista> {
+
+  return solicitar<InformacionAdicionalTransportista>(
+    "/api/movil/transportista/informacion-adicional",
+    "POST",
+    datos,
+    true
+  );
+}

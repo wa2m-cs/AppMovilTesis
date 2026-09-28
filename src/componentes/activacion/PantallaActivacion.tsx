@@ -2,10 +2,9 @@ import { useState } from "react";
 
 import { useRouter } from "expo-router";
 
-import {iniciarSesion,cerrarSesion} from "@/servicios/api";
+import { iniciarSesion } from "@/servicios/api";
 
 import {
-  Alert,
   KeyboardAvoidingView,
   Platform,
   Pressable,
@@ -13,11 +12,11 @@ import {
   StyleSheet,
   Text,
   TextInput,
-  View,
+  View
 } from "react-native";
 
-import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import { colores } from "@/constantes/colores";
 
@@ -65,13 +64,7 @@ export default function PantallaActivacion() {
           break;
 
         case "administrador":
-
-          await cerrarSesion();
-
-          setError(
-            "El módulo administrador todavía no está disponible."
-          );
-
+          router.replace("/administrador");
           break;
 
         default:
