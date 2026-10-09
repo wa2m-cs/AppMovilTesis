@@ -5,7 +5,6 @@ export default function InicioTecnico() {
   const funciones = [
     "Marcar horarios",
     "Registrar recolección de basura",
-    "Registrar evidencia de recolección",
   ];
 
   return (
@@ -17,7 +16,6 @@ export default function InicioTecnico() {
 
       rutas={[
         "/tecnico/horarios",
-        "/tecnico/recoleccion",
         "/tecnico/recoleccion",
       ]}
     />

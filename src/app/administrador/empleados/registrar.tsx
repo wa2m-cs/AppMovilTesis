@@ -2,11 +2,11 @@ import { useRouter } from "expo-router";
 import { useState } from "react";
 
 import {
-    Pressable,
-    ScrollView,
-    Text,
-    TextInput,
-    View,
+  Pressable,
+  ScrollView,
+  Text,
+  TextInput,
+  View,
 } from "react-native";
 
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -14,15 +14,12 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { estilosAdmin as estilos } from "@/constantes/estilosAdmin";
 
 import {
-    registrarEmpleadoAdmin,
+  registrarEmpleadoAdmin,
 } from "@/servicios/admin.servicio";
 
 const tipos = [
   "Motorista",
   "Tecnico",
-  "Ayudante",
-  "Mecanico",
-  "Coordinador",
 ];
 
 export default function RegistrarEmpleado() {

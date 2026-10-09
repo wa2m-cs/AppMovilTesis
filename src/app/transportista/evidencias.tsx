@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
 import { useRouter } from "expo-router";
+import { useEffect, useState } from "react";
 
 import {
   ActivityIndicator,
@@ -13,14 +13,13 @@ import {
 
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { colores } from "@/constantes/colores";
 
 import {
-  consultarServiciosParaEvidencias,
   consultarEvidenciasTransportista,
+  consultarServiciosParaEvidencias,
   guardarEvidenciaTransportista,
-  type ServicioParaEvidencia,
   type EvidenciaTransportista,
+  type ServicioParaEvidencia,
 } from "@/servicios/transportista.servicio";
 
 export default function EvidenciasTransportista() {
@@ -189,7 +188,7 @@ export default function EvidenciasTransportista() {
               {servicios.length === 0 ? (
 
                 <Text style={estilos.descripcion}>
-                  No tienes servicios asignados.
+                  No tienes servicios asignados, por lo que no puedes registrar evidencia.
                 </Text>
 
               ) : (
