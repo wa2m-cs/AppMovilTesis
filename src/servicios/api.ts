@@ -41,9 +41,17 @@ function obtenerUrl(): string {
   return url.replace(/\/$/, "");
 }
 
+export function urlApi(ruta: string): string {
+  return `${obtenerUrl()}${ruta}`;
+}
+
+export function cabecerasSesion(): Record<string, string> {
+  return sesion ? { Authorization: `Bearer ${sesion.token}` } : {};
+}
+
 export async function solicitar<T>(
   ruta: string,
-  metodo: "GET" | "POST" | "PATCH" = "GET",
+  metodo: "GET" | "POST" | "PATCH" | "PUT" = "GET",
   cuerpo?: object,
   autenticado = false
 ): Promise<T> {

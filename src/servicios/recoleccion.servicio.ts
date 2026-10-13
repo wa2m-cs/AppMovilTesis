@@ -1,62 +1,71 @@
 import { solicitar } from "@/servicios/api";
 
-export interface ServicioTecnico {
-  idServicioContrato: number;
+export interface Material {
+  idPrecioLugar: number;
+  tipo: string;
+  lugar: string;
+  precio: number;
+}
+
+export interface CatalogoRecoleccion {
+  conceptosGasto: string[];
+  materiales: Material[];
+}
+
+export interface CargaNueva {
+  idPrecioLugar: number;
+  toneladas: number;
+}
+
+export interface GastoNuevo {
+  concepto: string;
+  monto: number;
+  descripcion?: string;
+}
+
+export interface NuevaRecoleccion {
   idRutaTrabajo: number;
-  destino: string;
+  observacion: string;
+  cargas: CargaNueva[];
+  gastos: GastoNuevo[];
 }
 
-export interface Recoleccion {
+export interface RecoleccionGuardada {
   idLimpieza: number;
-  idServicioContrato: number;
-  fecha: string;
-  observacion: string | null;
-  etapa: string | null;
+  idRutaTrabajo: number;
+  toneladas: number;
+  totalCobrado: number;
+  totalGastos: number;
+  mensaje: string;
 }
 
-interface InicioTecnico {
-  limpiezas: Recoleccion[];
+export interface RegistroViaje {
+  idRutaTrabajo: number;
+  fecha: string | null;
+  destino: string;
+  cliente: string | null;
+  cargas: { material: string; toneladas: number; precio: number; monto: number }[];
+  gastos: { concepto: string; monto: number; descripcion: string | null }[];
+  observaciones: { idLimpieza: number; fecha: string; observacion: string | null; fotos: number[] }[];
 }
 
-export async function consultarServiciosTecnico():
-  Promise<ServicioTecnico[]> {
+export function conceptoVisible(concepto: string): string {
+  return concepto === "Alimentacion" ? "Alimentación" : concepto;
+}
 
-  return solicitar<ServicioTecnico[]>(
-    "/api/movil/tecnico/servicios",
+export async function consultarMateriales(idRutaTrabajo: number): Promise<CatalogoRecoleccion> {
+  return solicitar<CatalogoRecoleccion>(
+    `/api/movil/tecnico/viajes/${idRutaTrabajo}/materiales`,
     "GET",
     undefined,
     true
   );
 }
 
-export async function consultarRecolecciones():
-  Promise<Recoleccion[]> {
-
-  const resultado = await solicitar<InicioTecnico>(
-    "/api/movil/tecnico/inicio",
-    "GET",
-    undefined,
-    true
-  );
-
-  return resultado.limpiezas.filter(
-    limpieza =>
-      limpieza.etapa === "Recolección finalizada"
-  );
+export async function registrarRecoleccion(datos: NuevaRecoleccion): Promise<RecoleccionGuardada> {
+  return solicitar<RecoleccionGuardada>("/api/movil/tecnico/recoleccion", "POST", datos, true);
 }
 
-export async function registrarRecoleccion(
-  idServicioContrato: number,
-  observacion: string
-): Promise<Recoleccion> {
-
-  return solicitar<Recoleccion>(
-    "/api/movil/tecnico/recoleccion",
-    "POST",
-    {
-      idServicioContrato,
-      observacion
-    },
-    true
-  );
+export async function consultarRegistrosTecnico(): Promise<RegistroViaje[]> {
+  return solicitar<RegistroViaje[]>("/api/movil/tecnico/registros", "GET", undefined, true);
 }

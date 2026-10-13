@@ -10,6 +10,8 @@ import {
 } from "react-native";
 
 import { SafeAreaView } from "react-native-safe-area-context";
+
+import { sinFecha } from "@/utilidades/textoFechado";
 import { colores } from "@/constantes/colores";
 
 import {
@@ -146,7 +148,7 @@ export default function HistorialTransportista() {
                         </Text>
 
                         <Text style={estilos.descripcion}>
-                          Tipo: {viaje.tipo ?? "No especificado"}
+                          Tipo: {sinFecha(viaje.tipo) || "No especificado"}
                         </Text>
 
                         <Text style={estilos.descripcion}>
@@ -189,7 +191,7 @@ export default function HistorialTransportista() {
                       >
 
                         <Text style={estilos.nombre}>
-                          {ruta.destino}
+                          {sinFecha(ruta.destino)}
                         </Text>
 
                         <Text style={estilos.descripcion}>

@@ -11,6 +11,8 @@ import {
 
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { tipoVisible } from "@/utilidades/tiposEmpleado";
+
 import { estilosAdmin as estilos } from "@/constantes/estilosAdmin";
 
 import {
@@ -228,7 +230,7 @@ export default function RegistrarEmpleado() {
             >
               <Text style={estilos.textoOpcion}>
                 {tipo === opcion ? "✓ " : ""}
-                {opcion}
+                {tipoVisible(opcion)}
               </Text>
             </Pressable>
           ))}

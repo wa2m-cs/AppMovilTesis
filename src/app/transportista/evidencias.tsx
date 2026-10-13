@@ -13,29 +13,51 @@ import {
 
 import { SafeAreaView } from "react-native-safe-area-context";
 
-
+import GaleriaFotos from "@/componentes/evidencias/GaleriaFotos";
+import SelectorFotos, {
+  type FotoSeleccionada,
+} from "@/componentes/evidencias/SelectorFotos";
+import { subirFotosEvidencia } from "@/servicios/evidencias.servicio";
 import {
   consultarEvidenciasTransportista,
-  consultarServiciosParaEvidencias,
   guardarEvidenciaTransportista,
   type EvidenciaTransportista,
-  type ServicioParaEvidencia,
+  type TipoEvidencia,
 } from "@/servicios/transportista.servicio";
+import SelectorViaje from "@/componentes/viajes/SelectorViaje";
+import { consultarMisViajes, viajesHastaHoy, type Viaje } from "@/servicios/viajes.servicio";
+import { fechaConDia, fechaCorta, fechaIso } from "@/utilidades/textoFechado";
+
+const TIPOS: { valor: TipoEvidencia; titulo: string; descripcion: string }[] = [
+  {
+    valor: "limpieza",
+    titulo: "Limpieza de la unidad",
+    descripcion: "Evidencia de que el camión o la unidad quedó limpia.",
+  },
+  {
+    valor: "ruta",
+    titulo: "Ruta del viaje",
+    descripcion: "Evidencia del recorrido que hiciste durante el viaje.",
+  },
+];
 
 export default function EvidenciasTransportista() {
 
   const router = useRouter();
 
-  const [servicios, setServicios] =
-    useState<ServicioParaEvidencia[]>([]);
+  const [viajes, setViajes] = useState<Viaje[]>([]);
+  const [hoy, setHoy] = useState(fechaIso(new Date()));
 
   const [evidencias, setEvidencias] =
     useState<EvidenciaTransportista[]>([]);
 
-  const [servicioSeleccionado, setServicioSeleccionado] =
+  const [viajeSeleccionado, setViajeSeleccionado] =
     useState<number | null>(null);
 
+  const [tipo, setTipo] = useState<TipoEvidencia | null>(null);
+
   const [texto, setTexto] = useState("");
+  const [fotos, setFotos] = useState<FotoSeleccionada[]>([]);
 
   const [cargando, setCargando] = useState(true);
   const [guardando, setGuardando] = useState(false);
@@ -49,13 +71,14 @@ export default function EvidenciasTransportista() {
 
     try {
 
-      const [listaServicios, listaEvidencias] =
+      const [misViajes, listaEvidencias] =
         await Promise.all([
-          consultarServiciosParaEvidencias(),
+          consultarMisViajes(),
           consultarEvidenciasTransportista(),
         ]);
 
-      setServicios(listaServicios);
+      setHoy(misViajes.hoy);
+      setViajes(viajesHastaHoy(misViajes.viajes, misViajes.hoy));
       setEvidencias(listaEvidencias);
       setError("");
 
@@ -82,8 +105,13 @@ export default function EvidenciasTransportista() {
 
     if (guardando) return;
 
-    if (servicioSeleccionado === null) {
-      setError("Selecciona un servicio.");
+    if (viajeSeleccionado === null) {
+      setError("Selecciona el viaje.");
+      return;
+    }
+
+    if (tipo === null) {
+      setError("Selecciona el tipo de evidencia.");
       return;
     }
 
@@ -98,17 +126,30 @@ export default function EvidenciasTransportista() {
 
     try {
 
-      await guardarEvidenciaTransportista(
-        servicioSeleccionado,
+      const creada = await guardarEvidenciaTransportista(
+        viajeSeleccionado,
+        tipo,
         texto.trim()
       );
 
+      const fallidas = await subirFotosEvidencia(
+        creada.idLimpieza,
+        fotos.map(foto => foto.base64)
+      );
+
       setTexto("");
-      setServicioSeleccionado(null);
+      setTipo(null);
+      setFotos([]);
+      setViajeSeleccionado(null);
 
-      setMensaje("Evidencia guardada correctamente.");
+      if (fallidas > 0) {
+        setError(
+          `La evidencia se guardó, pero ${fallidas} foto(s) no se pudieron subir. Revisa tu conexión.`
+        );
+      } else {
+        setMensaje("Evidencia guardada correctamente.");
+      }
 
-      // Volver a consultar la base de datos después de haber guardado evidencia antes
       try {
 
         const lista = await consultarEvidenciasTransportista();
@@ -162,7 +203,7 @@ export default function EvidenciasTransportista() {
           </Text>
 
           <Text style={estilos.subtitulo}>
-            Registra por escrito las actividades de tus servicios.
+            Registra la limpieza de la unidad y la ruta de tus viajes, con fotos si las tienes.
           </Text>
 
         </View>
@@ -182,53 +223,45 @@ export default function EvidenciasTransportista() {
             <>
 
               <Text style={estilos.etiqueta}>
-                Selecciona el servicio
+                ¿De qué viaje es la evidencia?
               </Text>
 
-              {servicios.length === 0 ? (
+              <SelectorViaje
+                viajes={viajes}
+                hoy={hoy}
+                seleccionado={viajeSeleccionado}
+                onSeleccionar={setViajeSeleccionado}
+                deshabilitado={guardando}
+              />
 
-                <Text style={estilos.descripcion}>
-                  No tienes servicios asignados, por lo que no puedes registrar evidencia.
-                </Text>
+              <Text style={estilos.etiqueta}>
+                Tipo de evidencia
+              </Text>
 
-              ) : (
+              {TIPOS.map(opcion => (
 
-                servicios.map(servicio => (
+                <Pressable
+                  key={opcion.valor}
+                  onPress={() => setTipo(opcion.valor)}
+                  disabled={guardando}
+                  style={[
+                    estilos.opcion,
+                    tipo === opcion.valor && estilos.opcionSeleccionada
+                  ]}
+                >
 
-                  <Pressable
-                    key={servicio.idServicioContrato}
-                    onPress={() =>
-                      setServicioSeleccionado(
-                        servicio.idServicioContrato
-                      )
-                    }
-                    disabled={guardando}
-                    style={[
-                      estilos.opcion,
+                  <Text style={estilos.nombre}>
+                    {tipo === opcion.valor ? "✓ " : ""}
+                    {opcion.titulo}
+                  </Text>
 
-                      servicioSeleccionado ===
-                        servicio.idServicioContrato &&
-                        estilos.opcionSeleccionada
-                    ]}
-                  >
+                  <Text style={estilos.descripcion}>
+                    {opcion.descripcion}
+                  </Text>
 
-                    <Text style={estilos.nombre}>
-                      {servicioSeleccionado ===
-                        servicio.idServicioContrato
-                          ? "✓ "
-                          : ""}
+                </Pressable>
 
-                      Servicio #{servicio.idServicioContrato}
-                    </Text>
-
-                    <Text style={estilos.descripcion}>
-                      {servicio.destino}
-                    </Text>
-
-                  </Pressable>
-
-                ))
-              )}
+              ))}
 
               <Text style={estilos.etiqueta}>
                 Descripción de la evidencia
@@ -250,6 +283,13 @@ export default function EvidenciasTransportista() {
                 {texto.length}/500 caracteres
               </Text>
 
+              <SelectorFotos
+                fotos={fotos}
+                onCambiar={setFotos}
+                onError={setError}
+                deshabilitado={guardando}
+              />
+
               {error ? (
 
                 <Text style={estilos.error}>
@@ -270,12 +310,12 @@ export default function EvidenciasTransportista() {
                 style={[
                   estilos.boton,
 
-                  (guardando || servicios.length === 0) &&
+                  (guardando || viajes.length === 0) &&
                     estilos.deshabilitado
                 ]}
                 onPress={guardar}
                 disabled={
-                  guardando || servicios.length === 0
+                  guardando || viajes.length === 0
                 }
               >
 
@@ -293,8 +333,6 @@ export default function EvidenciasTransportista() {
 
         </View>
 
-        {/* Evidencias guardadas que ya hay */}
-
         <View style={estilos.tarjeta}>
 
           <Text style={estilos.tituloTarjeta}>
@@ -304,20 +342,26 @@ export default function EvidenciasTransportista() {
           {evidencias.length === 0 ? (
 
             <Text style={estilos.descripcion}>
-              No tienes evidencias escritas registradas.
+              No tienes evidencias registradas.
             </Text>
 
           ) : (
 
-            evidencias.map((evidencia, indice) => (
+            evidencias.map(evidencia => (
 
               <View
-                key={`${evidencia.idServicioContrato}-${evidencia.fechaUtc}-${indice}`}
+                key={evidencia.idLimpieza}
                 style={estilos.registro}
               >
 
+                <Text style={estilos.tipoEvidencia}>
+                  {evidencia.tipo === "ruta"
+                    ? "Ruta del viaje"
+                    : "Limpieza de la unidad"}
+                </Text>
+
                 <Text style={estilos.nombre}>
-                  Servicio #{evidencia.idServicioContrato}
+                  Viaje del {fechaConDia(evidencia.fechaViaje)}
                 </Text>
 
                 <Text style={estilos.descripcion}>
@@ -325,12 +369,14 @@ export default function EvidenciasTransportista() {
                 </Text>
 
                 <Text style={estilos.fecha}>
-                  {new Date(evidencia.fechaUtc).toLocaleString()}
+                  Registrada el {fechaCorta(evidencia.fecha)}
                 </Text>
 
                 <Text style={estilos.textoEvidencia}>
                   {evidencia.texto}
                 </Text>
+
+                <GaleriaFotos fotos={evidencia.fotos} />
 
               </View>
 
@@ -553,6 +599,15 @@ const estilos = StyleSheet.create({
     paddingHorizontal: 15,
     paddingVertical: 16,
     marginBottom: 12,
+  },
+
+  tipoEvidencia: {
+    color: "#86EFAC",
+    fontSize: 12,
+    fontWeight: "800",
+    textTransform: "uppercase",
+    letterSpacing: 0.6,
+    marginBottom: 6,
   },
 
   fecha: {

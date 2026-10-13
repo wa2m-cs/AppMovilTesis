@@ -13,12 +13,14 @@ import {
 
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import SelectorViaje from "@/componentes/viajes/SelectorViaje";
+import { consultarMisViajes, viajesHastaHoy, type Viaje } from "@/servicios/viajes.servicio";
+import { fechaConDia, fechaCorta, fechaIso, sinFecha } from "@/utilidades/textoFechado";
+
 import {
     consultarInformacionAdicional,
-    consultarServiciosParaEvidencias,
     registrarInformacionAdicional,
     type InformacionAdicionalTransportista,
-    type ServicioParaEvidencia,
 } from "@/servicios/transportista.servicio";
 
 // Aceptar números con punto o coma y hasta dos decimales.
@@ -43,13 +45,13 @@ function convertirNumero(valor: string): number | null {
 export default function InformacionAdicional() {
   const router = useRouter();
 
-  const [servicios, setServicios] =
-    useState<ServicioParaEvidencia[]>([]);
+  const [viajes, setViajes] = useState<Viaje[]>([]);
+  const [hoy, setHoy] = useState(fechaIso(new Date()));
 
   const [registros, setRegistros] =
     useState<InformacionAdicionalTransportista[]>([]);
 
-  const [servicioSeleccionado, setServicioSeleccionado] =
+  const [viajeSeleccionado, setViajeSeleccionado] =
     useState<number | null>(null);
 
   const [kilometros, setKilometros] = useState("");
@@ -66,13 +68,14 @@ export default function InformacionAdicional() {
     setCargando(true);
 
     try {
-      const [listaServicios, listaRegistros] =
+      const [misViajes, listaRegistros] =
         await Promise.all([
-          consultarServiciosParaEvidencias(),
+          consultarMisViajes(),
           consultarInformacionAdicional(),
         ]);
 
-      setServicios(listaServicios);
+      setHoy(misViajes.hoy);
+      setViajes(viajesHastaHoy(misViajes.viajes, misViajes.hoy));
       setRegistros(listaRegistros);
       setError("");
 
@@ -95,8 +98,8 @@ export default function InformacionAdicional() {
   async function guardar() {
     if (guardando) return;
 
-    if (servicioSeleccionado === null) {
-      setError("Selecciona un servicio.");
+    if (viajeSeleccionado === null) {
+      setError("Selecciona el viaje.");
       return;
     }
 
@@ -130,13 +133,13 @@ export default function InformacionAdicional() {
 
     try {
       await registrarInformacionAdicional({
-        idServicioContrato: servicioSeleccionado,
+        idRutaTrabajo: viajeSeleccionado,
         kilometros: valorKm,
         combustibleLitros: valorCombustible,
         gastoUsd: valorGasto,
       });
 
-      setServicioSeleccionado(null);
+      setViajeSeleccionado(null);
       setKilometros("");
       setCombustible("");
       setGasto("");
@@ -186,7 +189,7 @@ export default function InformacionAdicional() {
           </Text>
 
           <Text style={estilos.subtitulo}>
-            Registra los datos operativos de tus servicios.
+            Registra kilómetros, combustible y gastos de cada viaje.
           </Text>
         </View>
 
@@ -205,45 +208,16 @@ export default function InformacionAdicional() {
             <>
 
               <Text style={estilos.etiqueta}>
-                Selecciona un servicio
+                Selecciona el viaje
               </Text>
 
-              {servicios.length === 0 ? (
-                <Text style={estilos.descripcion}>
-                  No tienes servicios asignados.
-                </Text>
-              ) : (
-                servicios.map(servicio => (
-                  <Pressable
-                    key={servicio.idServicioContrato}
-                    disabled={guardando}
-                    onPress={() =>
-                      setServicioSeleccionado(
-                        servicio.idServicioContrato
-                      )
-                    }
-                    style={[
-                      estilos.opcion,
-                      servicioSeleccionado ===
-                        servicio.idServicioContrato &&
-                        estilos.opcionSeleccionada,
-                    ]}
-                  >
-                    <Text style={estilos.textoOpcion}>
-                      {servicioSeleccionado ===
-                        servicio.idServicioContrato
-                          ? "✓ "
-                          : ""}
-
-                      Servicio #{servicio.idServicioContrato}
-                    </Text>
-
-                    <Text style={estilos.descripcion}>
-                      {servicio.destino}
-                    </Text>
-                  </Pressable>
-                ))
-              )}
+              <SelectorViaje
+                viajes={viajes}
+                hoy={hoy}
+                seleccionado={viajeSeleccionado}
+                onSeleccionar={setViajeSeleccionado}
+                deshabilitado={guardando}
+              />
 
               <Text style={estilos.etiqueta}>
                 Kilómetros recorridos
@@ -310,11 +284,11 @@ export default function InformacionAdicional() {
               <Pressable
                 style={[
                   estilos.boton,
-                  (guardando || servicios.length === 0) &&
+                  (guardando || viajes.length === 0) &&
                     estilos.deshabilitado,
                 ]}
                 disabled={
-                  guardando || servicios.length === 0
+                  guardando || viajes.length === 0
                 }
                 onPress={guardar}
               >
@@ -343,19 +317,19 @@ export default function InformacionAdicional() {
           ) : (
             registros.map((registro, indice) => (
               <View
-                key={`${registro.idServicioContrato}-${registro.fechaUtc}-${indice}`}
+                key={registro.idLimpieza ?? indice}
                 style={estilos.registro}
               >
                 <Text style={estilos.nombreRegistro}>
-                  Servicio #{registro.idServicioContrato}
+                  {fechaConDia(registro.fechaViaje)}
                 </Text>
 
                 <Text style={estilos.descripcion}>
-                  {registro.destino}
+                  {sinFecha(registro.destino)}
                 </Text>
 
                 <Text style={estilos.fecha}>
-                  {new Date(registro.fechaUtc).toLocaleString()}
+                  {fechaCorta(registro.fecha)}
                 </Text>
 
                 <Text style={estilos.dato}>
@@ -367,7 +341,7 @@ export default function InformacionAdicional() {
                 </Text>
 
                 <Text style={estilos.dato}>
-                  Gasto: ${registro.gastoUsd.toFixed(2)}
+                  Gasto: ${Number(registro.gastoUsd).toFixed(2)}
                 </Text>
               </View>
             ))

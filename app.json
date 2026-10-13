@@ -32,6 +32,14 @@
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 76
         }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "SACOR usa tus fotos para adjuntarlas como evidencia de tu trabajo.",
+          "cameraPermission": "SACOR usa la cámara para tomar fotos de evidencia de tu trabajo.",
+          "microphonePermission": false
+        }
       ]
     ],
     "experiments": {

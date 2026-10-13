@@ -11,6 +11,8 @@ import {
 
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { tipoVisible } from "@/utilidades/tiposEmpleado";
+
 import { estilosAdmin as estilos } from "@/constantes/estilosAdmin";
 
 import {
@@ -135,7 +137,7 @@ export default function GestionarEmpleados() {
                 </Text>
 
                 <Text style={estilos.dato}>
-                  Tipo: {empleado.tipo}
+                  Tipo: {tipoVisible(empleado.tipo)}
                 </Text>
 
                 <Text style={estilos.dato}>

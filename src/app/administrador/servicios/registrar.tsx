@@ -11,6 +11,8 @@ import {
 
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { sinFecha } from "@/utilidades/textoFechado";
+
 import { estilosAdmin as estilos } from "@/constantes/estilosAdmin";
 
 import {
@@ -232,7 +234,7 @@ export default function RegistrarServicioExterno() {
                 <Text
                   style={estilos.nombreRegistro}
                 >
-                  {servicio.nombre}
+                  {sinFecha(servicio.nombre)}
                 </Text>
 
                 <Text style={estilos.dato}>

@@ -71,11 +71,17 @@ export interface ServicioParaEvidencia {
   fecha: string | null;
 }
 
+export type TipoEvidencia = "limpieza" | "ruta";
+
 export interface EvidenciaTransportista {
-  idServicioContrato: number;
+  idLimpieza: number;
+  idRutaTrabajo: number;
   destino: string;
-  fechaUtc: string;
+  fechaViaje: string | null;
+  fecha: string;
+  tipo: TipoEvidencia;
   texto: string;
+  fotos: number[];
 }
 
 export async function consultarServiciosParaEvidencias():
@@ -101,7 +107,8 @@ export async function consultarEvidenciasTransportista():
 }
 
 export async function guardarEvidenciaTransportista(
-  idServicioContrato: number,
+  idRutaTrabajo: number,
+  tipo: TipoEvidencia,
   texto: string
 ): Promise<EvidenciaTransportista> {
 
@@ -109,23 +116,26 @@ export async function guardarEvidenciaTransportista(
     "/api/movil/transportista/evidencias",
     "POST",
     {
-      idServicioContrato,
+      idRutaTrabajo,
+      tipo,
       texto
     },
     true
   );
 }
 export interface InformacionAdicionalTransportista {
-  idServicioContrato: number;
+  idLimpieza: number;
+  idRutaTrabajo: number;
   destino: string;
-  fechaUtc: string;
+  fechaViaje: string | null;
+  fecha: string;
   kilometros: number;
   combustibleLitros: number;
   gastoUsd: number;
 }
 
 export interface DatosInformacionAdicional {
-  idServicioContrato: number;
+  idRutaTrabajo: number;
   kilometros: number;
   combustibleLitros: number;
   gastoUsd: number;

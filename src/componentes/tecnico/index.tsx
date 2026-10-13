@@ -1,8 +1,11 @@
+import type { Href } from "expo-router";
+
 import InicioRol from "@/componentes/inicio/InicioRol";
 
 export default function InicioTecnico() {
 
   const funciones = [
+    "Calendario de viajes",
     "Marcar horarios",
     "Registrar recolección de basura",
   ];
@@ -15,6 +18,7 @@ export default function InicioTecnico() {
       funciones={funciones}
 
       rutas={[
+        "/tecnico/calendario" as Href,
         "/tecnico/horarios",
         "/tecnico/recoleccion",
       ]}
