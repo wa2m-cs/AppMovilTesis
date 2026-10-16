@@ -23,7 +23,8 @@ import {
   type Material,
   type RegistroViaje,
 } from "@/servicios/recoleccion.servicio";
-import { consultarMisViajes, viajesHastaHoy, type Viaje } from "@/servicios/viajes.servicio";
+import { consultarMisViajes, viajesDeHoy, type Viaje } from "@/servicios/viajes.servicio";
+import { estaEnJornada } from "@/servicios/horarios.servicio";
 import { fechaConDia, fechaIso } from "@/utilidades/textoFechado";
 
 interface FilaCarga {
@@ -52,6 +53,7 @@ export default function Recoleccion() {
   const router = useRouter();
 
   const [viajes, setViajes] = useState<Viaje[]>([]);
+  const [enJornada, setEnJornada] = useState(true);
   const [hoy, setHoy] = useState(fechaIso(new Date()));
   const [viaje, setViaje] = useState<number | null>(null);
 
@@ -75,7 +77,9 @@ export default function Recoleccion() {
     try {
       const [misViajes, lista] = await Promise.all([consultarMisViajes(), consultarRegistrosTecnico()]);
       setHoy(misViajes.hoy);
-      setViajes(viajesHastaHoy(misViajes.viajes, misViajes.hoy));
+      const jornada = await estaEnJornada(misViajes.hoy);
+      setEnJornada(jornada);
+      setViajes(jornada ? viajesDeHoy(misViajes.viajes, misViajes.hoy) : []);
       setRegistros(lista);
       setError("");
     } catch (e) {
@@ -201,6 +205,12 @@ export default function Recoleccion() {
             <Text style={estilos.tituloTarjeta}>Nueva recolección</Text>
 
             <Text style={estilos.etiqueta}>Selecciona el viaje</Text>
+            {!enJornada ? (
+              <Text style={estilos.aviso}>
+                Marca tu entrada en Horarios para registrar evidencias. Solo se muestran los viajes de hoy.
+              </Text>
+            ) : null}
+
             <SelectorViaje
               viajes={viajes}
               hoy={hoy}
@@ -408,6 +418,15 @@ export default function Recoleccion() {
 }
 
 const estilos = StyleSheet.create({
+  aviso: {
+    color: "#FCD34D",
+    backgroundColor: "#2A230A",
+    borderRadius: 10,
+    padding: 12,
+    marginBottom: 12,
+    fontSize: 13,
+    lineHeight: 19,
+  },
   pantalla: { flex: 1, backgroundColor: "#0A0A0A" },
   contenido: { paddingBottom: 42, flexGrow: 1 },
   encabezado: {

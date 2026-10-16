@@ -91,6 +91,10 @@ export function viajesHastaHoy(viajes: Viaje[], hoy: string): Viaje[] {
     .sort((a, b) => (b.fecha ?? "").localeCompare(a.fecha ?? ""));
 }
 
+export function viajesDeHoy(viajes: Viaje[], hoy: string): Viaje[] {
+  return viajes.filter(viaje => viaje.fecha === hoy);
+}
+
 export interface ViajeExtraAdmin {
   idViajeExtra: number;
   precio: number | null;

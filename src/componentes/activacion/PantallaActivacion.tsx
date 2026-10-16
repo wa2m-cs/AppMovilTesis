@@ -5,6 +5,7 @@ import { useRouter } from "expo-router";
 import { iniciarSesion } from "@/servicios/api";
 
 import {
+  Image,
   KeyboardAvoidingView,
   Platform,
   Pressable,
@@ -105,11 +106,11 @@ export default function PantallaActivacion() {
 
             {/* Logotipo de la aplicación */}
 
-            <View style={estilos.logo}>
-              <Text style={estilos.textoLogo}>
-                S
-              </Text>
-            </View>
+            <Image
+              source={require("@/assets/images/logo-sacor.png")}
+              style={estilos.logo}
+              resizeMode="contain"
+            />
 
             {/* nombre de la aplicación */}
 
@@ -235,19 +236,9 @@ const estilos = StyleSheet.create({
   },
 
   logo: {
-    width: 76,
-    height: 76,
-    borderRadius: 22,
-    backgroundColor: colores.primario,
-    alignItems: "center",
-    justifyContent: "center",
+    width: 120,
+    height: 120,
     marginBottom: 18,
-  },
-
-  textoLogo: {
-    color: "#051108",
-    fontSize: 38,
-    fontWeight: "900",
   },
 
   nombreAplicacion: {

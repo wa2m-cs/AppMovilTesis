@@ -26,7 +26,7 @@ export default function SelectorViaje({
   if (viajes.length === 0) {
     return (
       <Text style={estilos.vacio}>
-        No tienes viajes asignados hasta hoy. Cuando el administrador te asigne uno, aparecerá aquí.
+        No tienes viajes asignados para hoy.
       </Text>
     );
   }

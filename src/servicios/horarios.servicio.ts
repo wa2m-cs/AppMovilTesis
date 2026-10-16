@@ -35,3 +35,7 @@ export async function registrarSalida(
     true
   );
 }
+export async function estaEnJornada(hoy: string): Promise<boolean> {
+  const horarios = await consultarHorarios();
+  return horarios.some(h => !h.salida && h.fecha.slice(0, 10) === hoy);
+}

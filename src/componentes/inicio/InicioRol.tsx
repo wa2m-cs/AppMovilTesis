@@ -1,4 +1,5 @@
 import {
+  Image,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -53,13 +54,27 @@ export default function InicioRol({
 
         <View style={estilos.encabezado}>
 
-          <Text style={estilos.logo}>
-            SACOR
-          </Text>
+          <View style={estilos.filaMarca}>
 
-          <Text style={estilos.subtitulo}>
-            Portal de empleados
-          </Text>
+            <Image
+              source={require("@/assets/images/logo-sacor.png")}
+              style={estilos.imagenLogo}
+              resizeMode="contain"
+            />
+
+            <View>
+
+              <Text style={estilos.logo}>
+                SACOR
+              </Text>
+
+              <Text style={estilos.subtitulo}>
+                Portal de empleados
+              </Text>
+
+            </View>
+
+          </View>
 
         </View>
 
@@ -173,6 +188,17 @@ const estilos = StyleSheet.create({
     paddingBottom: 34,
     borderBottomWidth: 2,
     borderBottomColor: "#22C55E",
+  },
+
+  filaMarca: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+
+  imagenLogo: {
+    width: 64,
+    height: 64,
+    marginRight: 14,
   },
 
   logo: {

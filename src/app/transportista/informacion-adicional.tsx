@@ -14,7 +14,8 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import SelectorViaje from "@/componentes/viajes/SelectorViaje";
-import { consultarMisViajes, viajesHastaHoy, type Viaje } from "@/servicios/viajes.servicio";
+import { consultarMisViajes, viajesDeHoy, type Viaje } from "@/servicios/viajes.servicio";
+import { estaEnJornada } from "@/servicios/horarios.servicio";
 import { fechaConDia, fechaCorta, fechaIso, sinFecha } from "@/utilidades/textoFechado";
 
 import {
@@ -46,6 +47,7 @@ export default function InformacionAdicional() {
   const router = useRouter();
 
   const [viajes, setViajes] = useState<Viaje[]>([]);
+  const [enJornada, setEnJornada] = useState(true);
   const [hoy, setHoy] = useState(fechaIso(new Date()));
 
   const [registros, setRegistros] =
@@ -75,7 +77,9 @@ export default function InformacionAdicional() {
         ]);
 
       setHoy(misViajes.hoy);
-      setViajes(viajesHastaHoy(misViajes.viajes, misViajes.hoy));
+      const jornada = await estaEnJornada(misViajes.hoy);
+      setEnJornada(jornada);
+      setViajes(jornada ? viajesDeHoy(misViajes.viajes, misViajes.hoy) : []);
       setRegistros(listaRegistros);
       setError("");
 
@@ -210,6 +214,12 @@ export default function InformacionAdicional() {
               <Text style={estilos.etiqueta}>
                 Selecciona el viaje
               </Text>
+
+              {!enJornada ? (
+                <Text style={estilos.aviso}>
+                  Marca tu entrada en Horarios para registrar evidencias. Solo se muestran los viajes de hoy.
+                </Text>
+              ) : null}
 
               <SelectorViaje
                 viajes={viajes}
@@ -364,6 +374,15 @@ export default function InformacionAdicional() {
 }
 
 const estilos = StyleSheet.create({
+  aviso: {
+    color: "#FCD34D",
+    backgroundColor: "#2A230A",
+    borderRadius: 10,
+    padding: 12,
+    marginBottom: 12,
+    fontSize: 13,
+    lineHeight: 19,
+  },
 
   pantalla: {
     flex: 1,
